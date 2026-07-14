@@ -1,0 +1,22 @@
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.orm import DeclarativeBase
+
+from app.core.config import settings
+
+# Движок
+engine = create_async_engine(settings.database_url)
+
+# Базовый класс для всех будущих ORM-моделей
+class Base(DeclarativeBase):
+    pass
+
+# expire_on_commit=False нужен для async: иначе после commit() объект инвалидируется,
+# и при попытке прочитать его атрибуты в async-контексте без нового запроса будет MissingGreenlet
+session = async_sessionmaker(engine, expire_on_commit=False)
+
+async def get_db():
+    db = session()
+    try:
+        yield db
+    finally:
+        await db.close()
