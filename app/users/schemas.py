@@ -7,16 +7,16 @@ from pydantic import BaseModel, Field, model_validator
 class UserCreate(BaseModel):
     username: str = Field(..., min_length=3, max_length=30)
     email: str = Field(..., pattern=r"^[^@]+@[^@]+\.[^@]+$")
-    password: str = Field(..., min_length=8)
+    password: str = Field(..., min_length=8, max_length=72)
 
 
 class UserLogin(BaseModel):
     username: Optional[str] = Field(None, min_length=3, max_length=30)
     email: Optional[str] = Field(None, pattern=r"^[^@]+@[^@]+\.[^@]+$")
-    password: str = Field(..., min_length=8)
+    password: str = Field(..., min_length=8, max_length=72)
 
     @model_validator(mode='after')
-    def check_username_or_email(self):
+    def check_username_or_email(self) -> "UserLogin":
         if not self.username and not self.email:
             raise ValueError('Either username or email must be provided')
         return self

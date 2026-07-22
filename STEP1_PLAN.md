@@ -12,11 +12,11 @@
 
 ## ORM и БД
 
-- [x] `app/core/db.py` — create_async_engine, Base(DeclarativeBase), async_sessionmaker, get_db() зависимость с yield
+- [x] `app/core/db.py` — create_async_engine, Base(DeclarativeBase), async_sessionmaker, get_db() зависимость с yield + аннотации типов
 - [x] `app/users/models.py` — UserAccount с полями: id, username, email, hashed_password, is_active, is_superuser, created_at
-- [ ] Alembic init и конфигурация (env.py для async engine)
-- [ ] Первая миграция (users table)
-- [ ] Применение миграции (alembic upgrade head)
+- [x] Alembic init и конфигурация (env.py для async engine)
+- [x] Первая миграция (users table)
+- [x] Применение миграции (alembic upgrade head)
 
 ## API слой (Pydantic схемы)
 
@@ -25,24 +25,24 @@
 ## Бизнес-логика
 
 - [x] `app/core/security.py` — hash_password(), verify_password(), create_access_token(), decode_access_token()
-- [ ] `app/users/service.py` — UserService.create_user(), authenticate_user()
+- [x] `app/users/service.py` — create_user(), authenticate_user()
 - [ ] `app/users/dependencies.py` — get_current_user() через OAuth2PasswordBearer + decode JWT
 
 ## Роутер и эндпоинты
 
-- [ ] `app/users/router.py` — POST /signup, POST /login, GET /me
-- [ ] main.py — подключить router к FastAPI app
+- [x] `app/users/router.py` — POST /signup, POST /login, GET /me
+- [x] `app/main.py` — создать FastAPI app, подключить router
 
 ## Тестирование
 
+- [ ] Отложено на Step 2 (вместе с refresh tokens)
 - [ ] Conftest с async fixtures (async engine, test DB)
 - [ ] `app/users/tests/test_auth.py` — тесты signup/login/get_me/invalid_token
-- [ ] Все тесты проходят (pytest)
 
 ## Ручной тест
 
-- [ ] `/docs` Swagger UI доступен
-- [ ] Smoke test: signup → login → GET /me → обновление токена
+- [x] `/docs` Swagger UI доступен
+- [x] Smoke test: signup → login → GET /me (работает через Postman/curl)
 
 ## Notes
 

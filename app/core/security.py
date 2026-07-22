@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 
 from app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context: CryptContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:
@@ -17,18 +17,21 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
-    to_encode = data.copy()
+    to_encode: dict = data.copy()
     # timezone.utc нужен, чтобы время токена было в UTC, иначе могут быть проблемы с валидацией на разных серверах
     if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
+        expire: datetime = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=settings.access_token_expire_minutes)
+        expire: datetime = datetime.now(timezone.utc) + timedelta(minutes=settings.access_token_expire_minutes)
     # "exp" (expiration) — стандартный claim в JWT, используется при decode() для проверки жизненного цикла токена
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm="HS256")
+    to_encode.update({
+        "sub": str(data["sub"]),
+        "exp": expire,
+    })
+    encoded_jwt: str = jwt.encode(to_encode, settings.secret_key, algorithm="HS256")
     return encoded_jwt
 
 
 def decode_access_token(token: str) -> dict:
-    result = jwt.decode(token, settings.secret_key, algorithms=["HS256"])
+    result: dict = jwt.decode(token, settings.secret_key, algorithms=["HS256"])
     return result
